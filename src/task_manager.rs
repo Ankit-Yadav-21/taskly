@@ -71,3 +71,23 @@ pub fn list_tasks() {
         }
     }
 }
+
+// Function to update a task by index
+pub fn update_task(index: usize, new_description: Option<String>, completed: Option<bool>) {
+    let mut tasks = read_tasks();
+    if index < tasks.len() {
+        if let Some(description) = new_description {
+            tasks[index].description = description;
+        }
+        if let Some(is_completed) = completed {
+            tasks[index].completed = is_completed;
+        }
+        if let Err(e) = write_tasks(&tasks) {
+            eprintln!("Failed to update task: {}", e);
+        } else {
+            println!("Task updated successfully!");
+        }
+    } else {
+        eprintln!("Invalid index. No task found at this index.");
+    }
+}

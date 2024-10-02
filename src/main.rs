@@ -1,7 +1,7 @@
 mod task_manager;
 
 use std::env;
-use task_manager::{add_task, list_tasks, remove_task};
+use task_manager::{add_task, list_tasks, remove_task, update_task};
 
 fn print_help() {
     println!(
@@ -9,6 +9,7 @@ fn print_help() {
         Usage:\n\
         \tadd <TASK> - Adds a new task\n\
         \tremove <INDEX> - Removes a task by its index\n\
+        \tupdate <INDEX> <NEW_DESCRIPTION> [completed] - Updates a task's description or status\n\
         \tlist - Lists all tasks\n\
         \thelp - Prints this help menu\n"
     );
@@ -36,6 +37,21 @@ fn main() {
             } else if let Ok(index) = args[2].parse::<usize>() {
                 remove_task(index);
                 println!("Task removed successfully!");
+            } else {
+                eprintln!("Invalid index. Please specify a number.");
+            }
+        }
+        "update" => {
+            if args.len() < 4 {
+                eprintln!("Please specify the index and new description to update the task.");
+            } else if let Ok(index) = args[2].parse::<usize>() {
+                let new_description = args[3].clone();
+                let completed = if args.len() > 4 && args[4].eq_ignore_ascii_case("completed") {
+                    Some(true)
+                } else {
+                    None
+                };
+                update_task(index, Some(new_description), completed);
             } else {
                 eprintln!("Invalid index. Please specify a number.");
             }
